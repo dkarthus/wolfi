@@ -75,7 +75,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	ar -rcs $(NAME) $(OBJ)
 
-%.o: %.c libft.h
+%.o: %.c ../inc/libft.h
 	gcc $(FLAG) -c $< -o $@
 
 clean:
