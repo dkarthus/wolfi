@@ -6,7 +6,7 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 13:59:23 by dkarthus          #+#    #+#             */
-/*   Updated: 2020/12/07 18:56:17 by dkarthus         ###   ########.fr       */
+/*   Updated: 2020/12/08 15:06:57 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 int		ft_parse_wtexture(char *line, t_legend *l, int *flag)
 {
 	int		fd;
-	char 	*tmp;
 
 	if (line[1] != 'E' || line[2] != ' ')
 	{
@@ -23,15 +22,11 @@ int		ft_parse_wtexture(char *line, t_legend *l, int *flag)
 		return(-1);
 	}
 	line = line + 3;
-	tmp = ft_strdup(line);
-	if (!(l->WE = ft_strtrim(tmp, " ")))
+	if (!(l->WE = ft_strdup(line)))
 	{
-		free(tmp);
 		perror("Error\n->WE");
 		return (-1);
 	}
-	free(tmp);
-	l->WE = ft_strdup(line);
 	if ((fd = open(l->WE, O_RDONLY)) < 0)
 	{
 		ft_putstr_fd("Error\nWrong WE texture format", 1);
@@ -45,7 +40,6 @@ int		ft_parse_wtexture(char *line, t_legend *l, int *flag)
 int		ft_parse_etexture(char *line, t_legend *l, int *flag)
 {
 	int		fd;
-	char 	*tmp;
 
 	if (line[1] != 'A' || line[2] != ' ')
 	{
@@ -53,15 +47,11 @@ int		ft_parse_etexture(char *line, t_legend *l, int *flag)
 		return(-1);
 	}
 	line = line + 3;
-	tmp = ft_strdup(line);
-	if (!(l->EA = ft_strtrim(tmp, " ")))
+	if (!(l->EA = ft_strdup(line)))
 	{
-		free(tmp);
 		perror("Error\n->EA");
 		return (-1);
 	}
-	free(tmp);
-	l->EA = ft_strdup(line);
 	if ((fd = open(l->EA, O_RDONLY)) < 0)
 	{
 		ft_putstr_fd("Error\nWrong EA texture format", 1);
@@ -75,7 +65,6 @@ int		ft_parse_etexture(char *line, t_legend *l, int *flag)
 int		ft_parse_spritetex(char *line, t_legend *l, int *flag)
 {
 	int		fd;
-	char 	*tmp;
 
 	if (line[1] != ' ')
 	{
@@ -83,14 +72,11 @@ int		ft_parse_spritetex(char *line, t_legend *l, int *flag)
 		return(-1);
 	}
 	line = line + 2;
-	tmp = ft_strdup(line);
-	if (!(l->spr = ft_strtrim(tmp, " ")))
+	if (!(l->spr = ft_strdup(line)))
 	{
-		free(tmp);
 		perror("Error\n->spr");
 		return (-1);
 	}
-	free(tmp);
 	if ((fd = open(l->spr, O_RDONLY)) < 0)
 	{
 		ft_putstr_fd("Error\nWrong sprite texture format", 1);
@@ -108,7 +94,7 @@ int			ft_parse_fcol(char *line, t_legend *l, int *flag)
 	int 	col[5];
 
 	i = 0;
-	if (!(fcol = ft_split((line + 1), ' ')))
+	if (!(fcol = ft_split((line + 1), ',')))
 	{
 		perror("Error\n->floor");
 		return (-1);
@@ -136,7 +122,7 @@ int			ft_parse_ccol(char *line, t_legend *l, int *flag)
 	int 	col[5];
 
 	i = 0;
-	if (!(ccol = ft_split((line + 1), ' ')))
+	if (!(ccol = ft_split((line + 1), ',')))
 	{
 		perror("Error\n->ceiling");
 		return (-1);
