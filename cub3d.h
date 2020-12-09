@@ -6,7 +6,7 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/04 15:03:47 by dkarthus          #+#    #+#             */
-/*   Updated: 2020/12/08 14:36:33 by dkarthus         ###   ########.fr       */
+/*   Updated: 2020/12/09 19:21:11 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,17 @@ typedef struct	s_legend
 	char 	*spr;
 	char	**lvl;
 }				t_legend;
+
+typedef struct	s_window
+{
+	void	 *mlx;
+	void	*win;
+	void	*img;
+	void	*addr;
+	int		bpp;
+	int		line_len;
+	int		endian;
+}				t_win;
 
 int			ft_create_trgb(int t, int r, int g, int b);
 int			ft_get_t(int trgb);

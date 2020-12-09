@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "../cub3d.h"
 
 int		ft_parse_wtexture(char *line, t_legend *l, int *flag)
 {
