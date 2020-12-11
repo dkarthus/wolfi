@@ -6,7 +6,7 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/04 15:03:47 by dkarthus          #+#    #+#             */
-/*   Updated: 2020/12/10 18:16:40 by dkarthus         ###   ########.fr       */
+/*   Updated: 2020/12/11 19:03:54 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,15 @@ typedef struct	s_legend
 	char	**lvl;
 }				t_legend;
 
+typedef struct	s_obj
+{
+	int x;
+	int y;
+	int angle;
+	int start;
+	int end;
+}				t_obj;
+
 typedef struct	s_vars
 {
 	void		*mlx;
@@ -42,22 +51,10 @@ typedef struct	s_vars
 	int			bpp;
 	int			line_len;
 	int			endian;
-	t_legend	*l;
+	char		**lvl;
+	t_obj		*pov;
 }				t_vars;
 
-typedef struct	s_obj
-{
-	int x;
-	int y;
-	float angle;
-	float start;
-	float end;
-}				t_obj;
-typedef struct s_t
-{
-	t_obj *plr;
-	t_vars *inst;
-}				t_t;
 int			ft_create_trgb(int t, int r, int g, int b);
 int			ft_get_t(int trgb);
 int			ft_get_r(int trgb);
@@ -80,9 +77,9 @@ void		ft_free_map(char **map);
 t_legend	*ft_leg_init();
 
 
-int	ft_draw_map(t_t *t);
-void draw_plr(t_obj *plr, t_vars *inst);
-t_obj *player_init(char angl, int i, int j);
-void pixel_put_image(t_vars *img, int x, int y, int col);
+int		ft_draw_map(t_vars *inst);
+void	draw_plr(t_vars *inst);
+t_obj	*player_init(char **map);
+void	pixel_put_image(t_vars *img, int x, int y, int col);
 
 #endif

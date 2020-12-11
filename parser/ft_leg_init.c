@@ -16,20 +16,10 @@ t_legend	*ft_leg_init()
 {
 	t_legend *l;
 
-	if (!(l = malloc(sizeof(t_legend))))
+	if (!(l = ft_calloc(sizeof(t_legend), 1)))
 	{
 		perror("Error\n->leg");
 		return (NULL);
 	}
-	l->res_y = 0;
-	l->res_x = 0;
-	l->f_trgb = 0;
-	l->c_trgb = 0;
-	l->NO = NULL;
-	l->SO = NULL;
-	l->WE = NULL;
-	l->EA = NULL;
-	l->spr = NULL;
-	l->lvl = NULL;
 	return (l);
 }
