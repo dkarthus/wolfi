@@ -6,17 +6,17 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/04 16:15:59 by dkarthus          #+#    #+#             */
-/*   Updated: 2020/12/11 19:18:25 by dkarthus         ###   ########.fr       */
+/*   Updated: 2020/12/11 20:06:47 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void pixel_put_image(t_vars *inst, int x, int y, int col)
+void ft_pixel_put_image(t_vars *img, int x, int y, int col)
 {
 	char *dst;
 
-	dst = inst->addr + (x * (inst->bpp / 8) + y * inst->line_len);
+	dst = img->addr + (x * (img->bpp / 8) + y * img->line_len);
 	*(unsigned int *)dst = col;
 }
 
@@ -24,12 +24,11 @@ void pixel_put_image(t_vars *inst, int x, int y, int col)
 static int	key_hook(int keycode, t_vars *inst)
 {
 	mlx_clear_window(inst->mlx, inst->win);
-	1
 	if (keycode == 13)
-		inst->pov->y = inst->pov->y + 3;
-	if (keycode == 0)
 		inst->pov->y = inst->pov->y - 3;
 	if (keycode == 1)
+		inst->pov->y = inst->pov->y + 3;
+	if (keycode == 0)
 		inst->pov->x = inst->pov->x - 3;
 	if (keycode == 2)
 		inst->pov->x = inst->pov->x + 3;
@@ -37,15 +36,15 @@ static int	key_hook(int keycode, t_vars *inst)
 	mlx_put_image_to_window(inst->mlx, inst->win, inst->img, 0, 0);
 	return (0);
 }
-
+/*
 static int	x_exit(t_vars *inst)
 {
 	mlx_destroy_image(inst->mlx, inst->img);
 	mlx_destroy_window(inst->mlx, inst->win);
 	exit (0);
 }
-
-t_obj *player_init(char **map)
+*/
+t_obj *ft_player_init(char **map)
 {
 	t_obj *plr;
 	int i;
@@ -74,7 +73,7 @@ t_obj *player_init(char **map)
 	return (0);
 }
 
-void draw_plr(t_vars *inst)
+void ft_draw_plr(t_vars *inst)
 {
 	int y;
 	int x;
@@ -85,7 +84,7 @@ void draw_plr(t_vars *inst)
 		x = inst->pov->x;
 		while(x < (inst->pov->x + 20))
 		{
-			pixel_put_image(inst, x, y, 0x0000FF00);
+			ft_pixel_put_image(inst, x, y, 0x0000FF00);
 			x++;
 		}
 		y++;
@@ -112,7 +111,7 @@ int	ft_draw_map(t_vars *inst)
 				{
 					y = i * 20;
 					while (y++ < (i * 20 + 20))
-						pixel_put_image(inst, x, y, 0xffffff);
+						ft_pixel_put_image(inst, x, y, 0xffffff);
 				}
 			}
 			j++;

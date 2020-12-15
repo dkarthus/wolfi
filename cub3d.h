@@ -6,7 +6,7 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/04 15:03:47 by dkarthus          #+#    #+#             */
-/*   Updated: 2020/12/11 19:03:54 by dkarthus         ###   ########.fr       */
+/*   Updated: 2020/12/15 19:01:08 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 # include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <math.h>
+
+# define SCALE 40
 
 typedef struct	s_legend
 {
@@ -35,11 +38,11 @@ typedef struct	s_legend
 
 typedef struct	s_obj
 {
-	int x;
-	int y;
-	int angle;
-	int start;
-	int end;
+	float x;
+	float y;
+	float dir;
+	float fov_st;
+	float fov_end;
 }				t_obj;
 
 typedef struct	s_vars
@@ -51,7 +54,7 @@ typedef struct	s_vars
 	int			bpp;
 	int			line_len;
 	int			endian;
-	char		**lvl;
+	t_legend	*l;
 	t_obj		*pov;
 }				t_vars;
 
@@ -78,8 +81,8 @@ t_legend	*ft_leg_init();
 
 
 int		ft_draw_map(t_vars *inst);
-void	draw_plr(t_vars *inst);
-t_obj	*player_init(char **map);
-void	pixel_put_image(t_vars *img, int x, int y, int col);
+int		ft_draw_rays(t_vars *inst);
+t_obj	*ft_player_init(char **map);
+void	ft_pixel_put_image(t_vars *inst, int x, int y, int col);
 
 #endif
