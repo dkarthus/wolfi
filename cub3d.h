@@ -6,7 +6,7 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/04 15:03:47 by dkarthus          #+#    #+#             */
-/*   Updated: 2020/12/15 19:01:08 by dkarthus         ###   ########.fr       */
+/*   Updated: 2020/12/16 15:17:28 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <stdlib.h>
 # include <math.h>
 
-# define SCALE 40
+# define SCALE 64
 
 typedef struct	s_legend
 {
@@ -38,11 +38,11 @@ typedef struct	s_legend
 
 typedef struct	s_obj
 {
-	float x;
-	float y;
-	float dir;
-	float fov_st;
-	float fov_end;
+	double x;
+	double y;
+	double dir;
+	double fov_st;
+	double fov_end;
 }				t_obj;
 
 typedef struct	s_vars
@@ -82,7 +82,7 @@ t_legend	*ft_leg_init();
 
 int		ft_draw_map(t_vars *inst);
 int		ft_draw_rays(t_vars *inst);
-t_obj	*ft_player_init(char **map);
+//t_obj	*ft_player_init(char **map);
 void	ft_pixel_put_image(t_vars *inst, int x, int y, int col);
 
 #endif

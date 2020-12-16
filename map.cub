@@ -1,6 +1,6 @@
-R 1024 920
-F 0,220,100,0
-C 0,225,30,0
+R 1080 640
+F 12,12,110,0
+C 11,25,30,110
 
 NO /Users/dkarthus/cub3d/path_to_the_north_texture
 SO /Users/dkarthus/cub3d/path_to_the_south_texture

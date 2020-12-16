@@ -6,7 +6,7 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/15 15:18:12 by dkarthus          #+#    #+#             */
-/*   Updated: 2020/12/15 20:14:00 by dkarthus         ###   ########.fr       */
+/*   Updated: 2020/12/16 20:04:44 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,19 +23,40 @@ void ft_pixel_put_image(t_vars *inst, int x, int y, int col)
 int ft_draw_rays(t_vars *inst)
 {
 	t_obj ray;
-	float dst;
-	float x;
-	float y;
-	float mid;
+	double dst;
+	double x;
+	double y;
+	double mid;
 
 	mlx_clear_window(inst->mlx, inst->win);
 	inst->img = mlx_new_image(inst->mlx, inst->l->res_x, inst->l->res_y);
 	inst->addr = mlx_get_data_addr(inst->img, &inst->bpp, &inst->line_len, &inst
 			->endian);
+	y = 0;
+	mid = inst->l->res_y / 2;
+	while (y < mid)
+	{
+		x = 0;
+		while(x < inst->l->res_x)
+		{
+			ft_pixel_put_image(inst, (int)x, (int)y, inst->l->c_trgb);
+			x++;
+		}
+		y++;
+	}
+	while (y < inst->l->res_y)
+	{
+		x = 0;
+		while(x < inst->l->res_x)
+		{
+			ft_pixel_put_image(inst, (int)x, (int)y, inst->l->f_trgb);
+			x++;
+		}
+		y++;
+	}
 	ray.fov_st = inst->pov->dir - M_PI / 6;
 	ray.fov_end = inst->pov->dir + M_PI / 6;
 	x = 0;
-	mid = inst->l->res_y / 2;
 	while (ray.fov_st <= ray.fov_end && x < inst->l->res_x)
 	{
 		ray.y = inst->pov->y;
@@ -43,14 +64,17 @@ int ft_draw_rays(t_vars *inst)
 		while (inst->l->lvl[(int) (ray.y / SCALE)][(int) (ray.x / SCALE)] !=
 		'1')
 		{
-			ray.x += cos(ray.fov_st);
-			ray.y += sin(ray.fov_st);
+			ray.x += 0.1 * cos(ray.fov_st);
+			ray.y += 0.1 * sin(ray.fov_st);
 		}
 		ray.x = fabs(ray.x - inst->pov->x);
 		ray.y = fabs(ray.y - inst->pov->y);
-		dst = sqrt(ray.y * ray.y + ray.x * ray.x) * cos(fabs(fabs
-				(inst->pov->dir) - fabs(ray.fov_st)));
-		y =  5 * inst->l->res_y / dst;
+		dst = fabs(ray.x * cos(inst->pov->dir)) + fabs(ray.y * sin
+				(inst->pov->dir));
+		/*dst = sqrt(ray.y * ray.y + ray.x * ray.x) * cos(fabs(inst->pov->dir -
+				fabs(ray.fov_st)));*/
+		y = 20 * inst->l->res_y / dst;
+		printf("%f\n", dst);
 		while (y > 0 && (mid + y < inst->l->res_y))
 		{
 			ft_pixel_put_image(inst, x, mid - y, 0x990099);
@@ -58,7 +82,7 @@ int ft_draw_rays(t_vars *inst)
 			y--;
 		}
 		x++;
-		ray.fov_st += M_PI/(6 * inst->l->res_x);
+		ray.fov_st += M_PI/(3 * inst->l->res_x);
 	}
 	mlx_put_image_to_window(inst->mlx, inst->win, inst->img, 0, 0);
 	mlx_destroy_image(inst->mlx, inst->img);
@@ -67,23 +91,36 @@ int ft_draw_rays(t_vars *inst)
 
 static int	key_hook(int keycode, t_vars *inst)
 {
-	float y;
-	float x;
+	double y;
+	double x;
 
 	y = inst->pov->y;
 	x = inst->pov->x;
-	if (keycode == 13 && inst->l->lvl[(int)((y - 3) / SCALE)][(int)(x / SCALE)]
-						 != '1')
-		inst->pov->y = inst->pov->y - 3;
+	if (keycode == 13 &&
+		inst->l->lvl[(int) ((y - 3) / SCALE)][(int) (x / SCALE)]
+		!= '1')
+	{
+		inst->pov->y = inst->pov->y + 5 * sin(inst->pov->dir);
+		inst->pov->x = inst->pov->x + 5 * cos(inst->pov->dir);
+	}
 	if (keycode == 1 && inst->l->lvl[(int)((y + 3) / SCALE)][(int)(x / SCALE)]
 						!= '1')
-		inst->pov->y = inst->pov->y + 3;
+	{
+		inst->pov->x = inst->pov->x - 5 * cos(inst->pov->dir);
+		inst->pov->y = inst->pov->y - 5 * sin(inst->pov->dir);
+	}
 	if (keycode == 0 && inst->l->lvl[(int)(y / SCALE)][(int)((x - 3) / SCALE)]
 						!= '1')
-		inst->pov->x = inst->pov->x - 3;
+	{
+		inst->pov->x = inst->pov->x - 5 * cos(inst->pov->dir + M_PI / 3);
+		inst->pov->y = inst->pov->y - 5 * sin(inst->pov->dir + M_PI / 3);
+	}
 	if (keycode == 2 && inst->l->lvl[(int)(y / SCALE)][(int)((x + 3) / SCALE)]
 						!= '1')
-		inst->pov->x = inst->pov->x + 3;
+	{
+		inst->pov->x = inst->pov->x - 5 * cos(inst->pov->dir - M_PI / 3);
+		inst->pov->y = inst->pov->y - 5 * sin(inst->pov->dir - M_PI / 3);
+	}
 	if (keycode == 123)
 		inst->pov->dir = inst->pov->dir - 0.1;
 	if (keycode == 124)
@@ -98,7 +135,7 @@ static int	x_exit(t_vars *inst)
 	exit (0);
 }
 */
-float ft_set_ang(char angle)
+static double ft_set_ang(char angle)
 {
 	if (angle == 'E')
 		return (0);
@@ -111,7 +148,7 @@ float ft_set_ang(char angle)
 	return (0);
 }
 
-t_obj *ft_player_init(char **map)
+static t_obj *ft_player_init(char **map)
 {
 	t_obj *plr;
 	int i;
