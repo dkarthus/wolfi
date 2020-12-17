@@ -2,11 +2,11 @@ R 1080 640
 F 12,12,110,0
 C 11,25,30,110
 
-NO /Users/dkarthus/cub3d/path_to_the_north_texture
-SO /Users/dkarthus/cub3d/path_to_the_south_texture
-WE /Users/dkarthus/cub3d/path_to_the_west_texture
-EA /Users/dkarthus/cub3d/path_to_the_east_texture
-S /Users/dkarthus/cub3d/path_to_the_sprite_texture
+NO /Users/dkarthus/cub3d/txtrs/WALL2.xpm
+SO /Users/dkarthus/cub3d/txtrs/WALL33.xpm
+WE /Users/dkarthus/cub3d/txtrs/WALL63.xpm
+EA /Users/dkarthus/cub3d/txtrs/WALL75.xpm
+S /Users/dkarthus/cub3d/txtrs/BAR.xpm
 
         1111111111111111111111111
         1000000000110000000000001

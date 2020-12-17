@@ -6,7 +6,7 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/04 15:03:47 by dkarthus          #+#    #+#             */
-/*   Updated: 2020/12/16 15:17:28 by dkarthus         ###   ########.fr       */
+/*   Updated: 2020/12/17 16:24:47 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <stdlib.h>
 # include <math.h>
 
-# define SCALE 64
+# define SCALE 1
 
 typedef struct	s_legend
 {
@@ -35,6 +35,25 @@ typedef struct	s_legend
 	char 	*spr;
 	char	**lvl;
 }				t_legend;
+
+typedef struct	s_txtr
+{
+	void *NO;
+	int wNO;
+	int hNO;
+	void *SO;
+	int wSO;
+	int hSO;
+	void *WE;
+	int wWE;
+	int hWE;
+	void *EA;
+	int wEA;
+	int hEA;
+	void *SPR;
+	int wSPR;
+	int hSPR;
+}				t_txtr;
 
 typedef struct	s_obj
 {
@@ -56,6 +75,7 @@ typedef struct	s_vars
 	int			endian;
 	t_legend	*l;
 	t_obj		*pov;
+	t_txtr 		*tx;
 }				t_vars;
 
 int			ft_create_trgb(int t, int r, int g, int b);
