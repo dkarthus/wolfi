@@ -20,7 +20,7 @@
 # include <stdlib.h>
 # include <math.h>
 
-# define SCALE 1
+# define SCALE 64
 
 typedef struct	s_legend
 {
