@@ -6,7 +6,7 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/04 15:03:47 by dkarthus          #+#    #+#             */
-/*   Updated: 2020/12/17 16:24:47 by dkarthus         ###   ########.fr       */
+/*   Updated: 2020/12/20 19:08:44 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,11 @@ typedef struct	s_txtr
 
 typedef struct	s_obj
 {
-	double x;
-	double y;
-	double dir;
-	double fov_st;
-	double fov_end;
+	float x;
+	float y;
+	float dir;
+	float fov_st;
+	float fov_end;
 }				t_obj;
 
 typedef struct	s_vars
