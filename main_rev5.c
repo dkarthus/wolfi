@@ -6,7 +6,7 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 15:56:01 by dkarthus          #+#    #+#             */
-/*   Updated: 2020/12/20 19:22:44 by dkarthus         ###   ########.fr       */
+/*   Updated: 2020/12/21 13:32:25 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int ft_draw_rays(t_vars *inst)
 	double posY = inst->pov->y;
 	double rayDirX;
 	double rayDirY;
-	double dirX = -1;
+	double dirX = 1;
 	double dirY = 0;
 	int w;
 	int h;
@@ -98,7 +98,6 @@ int ft_draw_rays(t_vars *inst)
 	double sideDisX;
 	int stepX;
 	int stepY;
-	int hit = 1;
 	int side;
 	double dist;
 
@@ -110,11 +109,11 @@ int ft_draw_rays(t_vars *inst)
 	w = 0;
 	while (w <= inst->l->res_x)
 	{
-		cameraX = 2 * w / (double)inst->l->res_x - 1;
+		cameraX = (2 * w) / ((double)inst->l->res_x)- 1;
 		rayDirX = dirX + planeX * cameraX;
 		rayDirY = dirY + planeY * cameraX;
-		deltaX = (rayDirY == 0) ? 0 : ((rayDirX == 0) ? 1 : fabs(1 / rayDirX));
-		deltaY = (rayDirX == 0) ? 0 : ((rayDirY == 0) ? 1 : fabs(1 / rayDirY));
+		deltaX = (rayDirX == 0) ? 1 : fabs(1 / rayDirX);
+		deltaY = (rayDirY == 0) ? 1 : fabs(1 / rayDirY);
 		if (rayDirX < 0)
 		{
 			stepX = -1;
@@ -136,7 +135,7 @@ int ft_draw_rays(t_vars *inst)
 			stepY = 1;
 			sideDisY = (mapY + 1.0 - posY) * deltaY;
 		}
-		while (hit)
+		while (inst->l->lvl[mapY][mapX] != '1')
 		{
 			if (sideDisX < sideDisY)
 			{
@@ -150,8 +149,6 @@ int ft_draw_rays(t_vars *inst)
 				mapY += stepY;
 				side = 1;
 			}
-			if (inst->l->lvl[mapY][mapX] == '1')
-				hit = 0;
 		}
 		if (side == 0)
 			dist = fabs((mapX - posX + (1 - stepX) / 2) / rayDirX);
@@ -160,7 +157,8 @@ int ft_draw_rays(t_vars *inst)
 		h = -1;
 		int mid = inst->l->res_y / 2;
 		printf("%f\n", dist);
-		while (h < inst->l->res_y/ dist)
+		printf("%d\n", w);
+		while (h < ((int)(inst->l->res_y/ (2 * dist))))
 		{
 			h++;
 			if (h > mid)

@@ -6,7 +6,7 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 15:04:35 by dkarthus          #+#    #+#             */
-/*   Updated: 2020/12/20 20:05:00 by dkarthus         ###   ########.fr       */
+/*   Updated: 2020/12/21 18:44:21 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,32 +27,32 @@ static unsigned int ft_get_pixel_col(t_vars *inst, int x, int y)
 	dst = inst->addr + (x * (inst->bpp / 8) + y * inst->line_len);
 	return (*(unsigned int *)dst);
 }
-*/
+
 static float dtr(int deg)
 {
 	return (deg * M_PI / 180.0);
 }
-
-int rnd_ang(int ang)
+*/
+double rnd_ang(double ang)
 {
-	if (ang > 359)
-		ang -= 360;
+	if (ang > 6.2657)
+		ang -= 6.2832;
 	if (ang < 0)
-		ang += 360;
+		ang += 6.2832;
 	return (ang);
 }
 
 int ft_draw_rays(t_vars *inst)
 {
 	t_obj ray;
-	float dstV = 10000000;
-	float dstH = 10000000;
-	float dst;
+	double dstV = 10000000;
+	double dstH = 10000000;
+	double dst;
 	int x;
 	int y;
-	float mid;
-	float xof;
-	float yof;
+	int mid;
+	double xof;
+	double yof;
 	int iter;
 
 	mlx_clear_window(inst->mlx, inst->win);
@@ -81,41 +81,41 @@ int ft_draw_rays(t_vars *inst)
 		}
 		y++;
 	}
-	ray.fov_st = inst->pov->dir + M_PI / 6.0;
+	ray.fov_st = 4.398;
+//	ray.fov_st = inst->pov->dir - M_PI / 6.0;
+	ray.fov_st = rnd_ang(ray.fov_st);
 	ray.fov_end = 0;
 	x = 0;
-	while (ray.fov_end <= (M_PI / 3.0) && x < (inst->l->res_x - 1))
+	while (x < (inst->l->res_x - 1))
 	{
 		iter = 1;
 		if (sin(ray.fov_st) > 0.001)
 		{
-			ray.y = SCALE * (int)(inst->pov->y / SCALE) - 0.1);
-			ray.x = ((inst->pov->y - ray.y) * cos(ray.fov_st)) / sin(ray
-					.fov_st) + inst->pov->x;
+			ray.y = SCALE * (int)floor(inst->pov->y / SCALE) - 0.0001;
+			ray.x = (inst->pov->y - ray.y) * (cos(ray.fov_st) / sin(ray
+					.fov_st)) + inst->pov->x;
 			yof = -SCALE;
-			xof = (-yof * cos(ray.fov_st)) / sin(ray.fov_st);
+			xof = -yof * (cos(ray.fov_st) / sin(ray.fov_st));
 		}
 		else if (sin(ray.fov_st) < -0.001)
 		{
-			ray.y = SCALE * ((int)inst->pov->y / SCALE) + SCALE;
-			ray.x = ((inst->pov->y - ray.y) * cos(ray.fov_st)) / sin(ray
-			.fov_st) + inst->pov->x;
+			ray.y = SCALE * (int)floor(inst->pov->y / SCALE) + SCALE;
+			ray.x = (inst->pov->y - ray.y) * (cos(ray.fov_st) / sin(ray
+			.fov_st)) + inst->pov->x;
 			yof = SCALE;
-			xof = (-yof * cos(ray.fov_st)) / sin(ray.fov_st);
+			xof = -yof * (cos(ray.fov_st) / sin(ray.fov_st));
 		}
 		else
 		{
-	//		ray.x = inst->pov->x;
-	//		ray.y = inst->pov->y;
 			iter = 0;
 		}
-		while (iter > 0 && iter < 10 && ray.y > 0 && ray.x > 0)
+		while (iter > 0 && ray.y >= 0 && ray.x >= 0)
 		{
-			if (inst->l->lvl[(int)floor(ray.y / SCALE)][(int)floor(ray.x /
+			if (inst->l->lvl[(int)ray.y / SCALE][(int)(ray.x /
 			SCALE)]	== 	'1' )
 			{
-				dstH = fabs((inst->pov->x - ray.x) * cos(inst->pov->dir)) +
-				fabs((inst->pov->y - ray.y) * sin(inst->pov->dir));
+				dstH = (ray.x - inst->pov->x) * cos(inst->pov->dir) -
+				(ray.y - inst->pov->y) * sin(inst->pov->dir);
 				break;
 			}
 			ray.x += xof;
@@ -129,33 +129,32 @@ int ft_draw_rays(t_vars *inst)
 		if (cos(ray.fov_st) > 0.001)
 		{
 			ray.x = SCALE * (int)floor(inst->pov->x / SCALE) + SCALE;
-			ray.y = ((inst->pov->x - ray.x) * sin(ray.fov_st)) / cos(ray
-			.fov_st) + inst->pov->y;
+			ray.y = (inst->pov->x - ray.x) * (sin(ray.fov_st) / cos(ray
+			.fov_st)) + inst->pov->y;
 			xof = SCALE;
-			yof = (-xof * sin(ray.fov_st)) / cos(ray.fov_st);
+			yof = -xof * (sin(ray.fov_st) / cos(ray.fov_st));
 		}
 		else if (cos(ray.fov_st) < -0.001)
 		{
-			ray.x = SCALE * (int)floor(inst->pov->x / SCALE - 0.1);
-			ray.y = ((inst->pov->x - ray.x) * sin(ray.fov_st)) / cos(ray
-			.fov_st) + inst->pov->y;
+			ray.x = SCALE * (int)floor(inst->pov->x / SCALE) - 0.0001;
+			ray.y = (inst->pov->x - ray.x) * (sin(ray.fov_st) / cos(ray
+			.fov_st)) + inst->pov->y;
 			xof = -SCALE;
-			yof = (-xof * sin(ray.fov_st)) / cos(ray.fov_st);
+			yof = -xof * (sin(ray.fov_st) / cos(ray.fov_st));
 		}
 		else
 		{
-	//		ray.x = inst->pov->x;
-	//		ray.y = inst->pov->y;
 			iter = 0;
 		}
-		while (iter > 0 && iter < 10 && ray.y > 0 && ray.x > 0)
+		while (iter > 0 && ray.y >= 0 && ray.x >= 0)
 		{
-			if (inst->l->lvl[(int)floor(ray.y / SCALE)][(int)floor(ray.x /
-			SCALE)]	== 	'1' )
+			printf("%c\n", inst->l->lvl[(int)(ray.y / SCALE)][(int)ray.x
+			/SCALE]);
+			if (inst->l->lvl[(int)(ray.y / SCALE)][(int)ray.x /
+			SCALE]	== 	'1' )
 			{
-
-				dstV = fabs((inst->pov->x - ray.x) * cos(inst->pov->dir)) +
-					   fabs((inst->pov->y - ray.y) * sin(inst->pov->dir));
+				dstV = (ray.x - inst->pov->x) * cos(inst->pov->dir) -
+					   (ray.y - inst->pov->y) * sin(inst->pov->dir);
 				break;
 			}
 			ray.x += xof;
@@ -171,10 +170,11 @@ int ft_draw_rays(t_vars *inst)
 				fabs(ray.fov_st)));*/
 		dst = dstH > dstV ? dstV : dstH;
 	//	dst = fabs(dst * cos(ray.fov_st - inst->pov->dir));
+	//	dst = fabs(dst * cos(ray.fov_st - inst->pov->dir));
 		printf("dst %f\n", dst);
 		printf("ang %f\n", ray.fov_st / 0.01745);
 		y = -1;
-		while (y < ( inst->l->res_y / dst) && dst > 1)
+		while (y < (int)( 64 * inst->l->res_y / dst) && dst > 0)
 		{
 			y++;
 			if (y > (mid - 1))
@@ -183,9 +183,8 @@ int ft_draw_rays(t_vars *inst)
 			ft_pixel_put_image(inst, x, mid + y, 0x990099);
 		}
 		x++;
-		ray.fov_st -= M_PI/(3.0 * inst->l->res_x);
-//		if (ray.fov_st < 0)
-//			ray.fov_st += 2.0 * M_PI;
+		ray.fov_st += M_PI/(3.0 * inst->l->res_x);
+		ray.fov_st = rnd_ang(ray.fov_st);
 		ray.fov_end += M_PI/(3.0 * inst->l->res_x);
 	}
 	mlx_put_image_to_window(inst->mlx, inst->win, inst->img, 0, 0);
@@ -230,14 +229,12 @@ static int	key_hook(int keycode, t_vars *inst)
 	if (keycode == 123)
 	{
 		inst->pov->dir = inst->pov->dir - 0.1;
-//		if (inst->pov->dir < 0)
-//			inst->pov->dir += 2.0 * M_PI;
+		inst->pov->dir = rnd_ang(inst->pov->dir);
 	}
 	if (keycode == 124)
 	{
 		inst->pov->dir = inst->pov->dir + 0.1;
-//		if (inst->pov->dir > 2.0 * M_PI)
-//			inst->pov->dir = 0;
+		inst->pov->dir = rnd_ang(inst->pov->dir);
 	}
 	ft_draw_rays(inst);
 	return (0);
