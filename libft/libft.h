@@ -6,7 +6,7 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/31 16:33:34 by dkarthus          #+#    #+#             */
-/*   Updated: 2020/12/02 20:03:42 by dkarthus         ###   ########.fr       */
+/*   Updated: 2021/01/08 16:57:28 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <stddef.h>
+# include <stdint.h>
 
 typedef struct	s_list
 {

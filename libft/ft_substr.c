@@ -26,7 +26,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	flen = (len > ft_strlen(s + start)) ? ft_strlen(s + start) : len;
 	if (!(dst = (char *)ft_calloc((flen + 1), sizeof(char))))
 		return (NULL);
-	while (i < len != 0 && s[start])
+	while ((i < len) && s[start])
 	{
 		dst[i] = s[start];
 		i++;

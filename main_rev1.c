@@ -6,11 +6,12 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/04 16:15:59 by dkarthus          #+#    #+#             */
-/*   Updated: 2020/12/11 20:06:47 by dkarthus         ###   ########.fr       */
+/*   Updated: 2021/01/15 17:01:16 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+#include <mlx.h>
 
 void ft_pixel_put_image(t_vars *img, int x, int y, int col)
 {
@@ -20,7 +21,7 @@ void ft_pixel_put_image(t_vars *img, int x, int y, int col)
 	*(unsigned int *)dst = col;
 }
 
-
+/*
 static int	key_hook(int keycode, t_vars *inst)
 {
 	mlx_clear_window(inst->mlx, inst->win);
@@ -36,14 +37,14 @@ static int	key_hook(int keycode, t_vars *inst)
 	mlx_put_image_to_window(inst->mlx, inst->win, inst->img, 0, 0);
 	return (0);
 }
-/*
+
 static int	x_exit(t_vars *inst)
 {
 	mlx_destroy_image(inst->mlx, inst->img);
 	mlx_destroy_window(inst->mlx, inst->win);
 	exit (0);
 }
-*/
+
 t_obj *ft_player_init(char **map)
 {
 	t_obj *plr;
@@ -118,33 +119,46 @@ int	ft_draw_map(t_vars *inst)
 		}
 		i++;
 	}
-	draw_plr(inst);
+	ft_draw_plr(inst);
 	return (0);
 }
-
+*/
 int main(void)
 {
-	char **map;
+//	char **map;
 	t_vars inst;
-	t_legend *l;
+//	t_legend *l;
 
 	inst.mlx = mlx_init();
 	inst.win = mlx_new_window(inst.mlx, 640, 480, "Hell!");
 	inst.img = mlx_new_image(inst.mlx, 640, 480);
 	inst.addr = mlx_get_data_addr(inst.img, &inst.bpp, &inst.line_len, &inst
 	.endian);
-	if (!(l = ft_leg_init()))
+/*	if (!(l = ft_leg_init()))
 		return (-1);
 	map = ft_parse("/Users/dkarthus/cub3d/map.cub");
 	if (!(ft_parse_legend(map, l)))
 		return (-1);
 	inst.lvl = l->lvl;
 	inst.pov = player_init(inst.lvl);
-	ft_draw_map(&inst);
+	ft_draw_map(&inst);*/
+    int i, j;
+    i = 0;
+    while (i < 10)
+    {
+        j = 0;
+        while (j < 10)
+        {
+            ft_pixel_put_image(&inst, 5 + i, 5 + j, 0x00ffff00);
+            j++;
+			//printf("%d %d \n", i, j);
+        }
+        i++;
+    }
 	mlx_put_image_to_window(inst.mlx, inst.win, inst.img, 0, 0);
 //	mlx_destroy_image(inst.mlx, inst.img);
 //	mlx_hook(inst.win, 17, 0, key_hook, &inst);
-	mlx_key_hook(inst.win, key_hook, &inst);
+//	mlx_key_hook(inst.win, key_hook, &inst);
 //	mlx_loop_hook(inst.mlx, key_hook, &inst);
 	mlx_loop(inst.mlx);
 	return (0);

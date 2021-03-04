@@ -14,11 +14,6 @@
 
 void	ft_putuintmax_fd(unsigned long long n, int fd)
 {
-	if (n < 0)
-	{
-		ft_putchar_fd('-', fd);
-		n = -n;
-	}
 	if (n < 10)
 		ft_putchar_fd((n + '0'), fd);
 	else

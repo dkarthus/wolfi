@@ -6,15 +6,15 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/04 15:03:47 by dkarthus          #+#    #+#             */
-/*   Updated: 2020/12/21 18:23:25 by dkarthus         ###   ########.fr       */
+/*   Updated: 2021/02/25 22:24:47 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB3D_H
 # define CUB3D_H
 
-# include "./inc/libft.h"
-# include "./inc/mlx.h"
+# include "libft.h"
+# include <mlx.h>
 # include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -36,24 +36,16 @@ typedef struct	s_legend
 	char	**lvl;
 }				t_legend;
 
-typedef struct	s_txtr
+typedef struct s_txt
 {
-	void *NO;
-	int wNO;
-	int hNO;
-	void *SO;
-	int wSO;
-	int hSO;
-	void *WE;
-	int wWE;
-	int hWE;
-	void *EA;
-	int wEA;
-	int hEA;
-	void *SPR;
-	int wSPR;
-	int hSPR;
-}				t_txtr;
+	void		*img;
+	void		*addr;
+	int			bpp;
+	int			line_len;
+	int			endian;
+	int			x;
+	int 		y;
+}				t_txt;
 
 typedef struct	s_obj
 {
@@ -75,7 +67,11 @@ typedef struct	s_vars
 	int			endian;
 	t_legend	*l;
 	t_obj		*pov;
-	t_txtr 		*tx;
+	t_txt 		NO;
+	t_txt 		SO;
+	t_txt 		WE;
+	t_txt 		EA;
+	t_txt 		SPR;
 }				t_vars;
 
 int			ft_create_trgb(int t, int r, int g, int b);
@@ -103,6 +99,6 @@ t_legend	*ft_leg_init();
 int		ft_draw_map(t_vars *inst);
 int		ft_draw_rays(t_vars *inst);
 //t_obj	*ft_player_init(char **map);
-void	ft_pixel_put_image(t_vars *inst, int x, int y, int col);
+//void	ft_pixel_put_image(t_vars *inst, int x, int y, int col);
 
 #endif

@@ -1,17 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_rev4.c                                        :+:      :+:    :+:   */
+/*   main_rev6.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/18 15:04:35 by dkarthus          #+#    #+#             */
-/*   Updated: 2021/02/24 22:49:48 by dkarthus         ###   ########.fr       */
+/*   Created: 2021/02/25 19:36:42 by dkarthus          #+#    #+#             */
+/*   Updated: 2021/03/01 23:39:47 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-#include <mlx.h>
 
 static int ft_is_hit(char **map, int y, int x)
 {
@@ -31,22 +30,22 @@ static int ft_is_hit(char **map, int y, int x)
 	return (0);
 }
 
-void ft_pixel_put_image(t_vars *inst, int x, int y, int col)
+void ft_pixel_put_image(t_vars *inst, int x, int y, unsigned int col)
 {
 	char *dst;
 
 	dst = inst->addr + (x * (inst->bpp / 8) + y * inst->line_len);
 	*(unsigned int *)dst = col;
 }
-/*
-static unsigned int ft_get_pixel_col(t_vars *inst, int x, int y)
+
+static unsigned int ft_get_pixel_col(t_txt *txt, int x, int y)
 {
 	char *dst;
 
-	dst = inst->addr + (x * (inst->bpp / 8) + y * inst->line_len);
+	dst = txt->addr + (x * (txt->bpp / 8) + y * txt->line_len);
 	return (*(unsigned int *)dst);
 }
-
+/*
 static float dtr(int deg)
 {
 	return (deg * M_PI / 180.0);
@@ -61,6 +60,7 @@ double rnd_ang(double ang)
 	return (ang);
 }
 
+
 int ft_draw_rays(t_vars *inst)
 {
 	t_obj ray;
@@ -72,11 +72,13 @@ int ft_draw_rays(t_vars *inst)
 	int mid;
 	double xof;
 	double yof;
-	int iter;
+	int iter, act;
+	float x_V, x_H, x_tx;
+	unsigned int col_up, col_dwn;
+	t_txt *tx_drw;
 
-	inst->img = mlx_new_image(inst->mlx, inst->l->res_x, inst->l->res_y);
-	inst->addr = mlx_get_data_addr(inst->img, &inst->bpp, &inst->line_len, &inst
-			->endian);
+
+
 	y = 0;
 	mid = inst->l->res_y / 2;
 	while (y < mid)
@@ -101,17 +103,17 @@ int ft_draw_rays(t_vars *inst)
 	}
 //	ray.fov_st = 4.398;
 	ray.fov_st = inst->pov->dir - M_PI / 6.0;
-	ray.fov_st = rnd_ang(ray.fov_st);
+//	ray.fov_st = rnd_ang(ray.fov_st);
 	ray.fov_end = 0;
-	x = 0;
-	while (x < (inst->l->res_x - 1))
+	x = inst->l->res_x;
+	while (x >= 0)
 	{
 		iter = 1;
 		if (sin(ray.fov_st) > 0.001)
 		{
 			ray.y = SCALE * ((int)inst->pov->y / SCALE) - 0.0001;
 			ray.x = (inst->pov->y - ray.y) * (cos(ray.fov_st) / sin(ray
-					.fov_st)) + inst->pov->x;
+																			.fov_st)) + inst->pov->x;
 			yof = -SCALE;
 			xof = -yof * (cos(ray.fov_st) / sin(ray.fov_st));
 		}
@@ -119,7 +121,7 @@ int ft_draw_rays(t_vars *inst)
 		{
 			ray.y = SCALE * ((int)inst->pov->y / SCALE) + SCALE;
 			ray.x = (inst->pov->y - ray.y) * (cos(ray.fov_st) / sin(ray
-			.fov_st)) + inst->pov->x;
+																			.fov_st)) + inst->pov->x;
 			yof = SCALE;
 			xof = -yof * (cos(ray.fov_st) / sin(ray.fov_st));
 		}
@@ -132,7 +134,8 @@ int ft_draw_rays(t_vars *inst)
 			if (ft_is_hit(inst->l->lvl, (int)ray.y / SCALE, (int)ray.x / SCALE))
 			{
 				dstH = (ray.x - inst->pov->x) * cos(inst->pov->dir) -
-				(ray.y - inst->pov->y) * sin(inst->pov->dir);
+					   (ray.y - inst->pov->y) * sin(inst->pov->dir);
+				x_H = (ray.x/SCALE - floor(ray.x/SCALE)) * (float)inst->NO.x;
 				break;
 			}
 			ray.x += xof;
@@ -145,7 +148,7 @@ int ft_draw_rays(t_vars *inst)
 		{
 			ray.x = SCALE * ((int)inst->pov->x / SCALE) + SCALE;
 			ray.y = (inst->pov->x - ray.x) * (sin(ray.fov_st) / cos(ray
-			.fov_st)) + inst->pov->y;
+																			.fov_st)) + inst->pov->y;
 			xof = SCALE;
 			yof = -xof * (sin(ray.fov_st) / cos(ray.fov_st));
 		}
@@ -153,7 +156,7 @@ int ft_draw_rays(t_vars *inst)
 		{
 			ray.x = SCALE * ((int)inst->pov->x / SCALE) - 0.0001;
 			ray.y = (inst->pov->x - ray.x) * (sin(ray.fov_st) / cos(ray
-			.fov_st)) + inst->pov->y;
+																			.fov_st)) + inst->pov->y;
 			xof = -SCALE;
 			yof = -xof * (sin(ray.fov_st) / cos(ray.fov_st));
 		}
@@ -167,41 +170,54 @@ int ft_draw_rays(t_vars *inst)
 			{
 				dstV = (ray.x - inst->pov->x) * cos(inst->pov->dir) -
 					   (ray.y - inst->pov->y) * sin(inst->pov->dir);
+				x_V = (ray.y/SCALE - floor(ray.y/SCALE)) * (float)inst->NO.x;
 				break;
 			}
 			ray.x += xof;
 			ray.y += yof;
 			iter++;
 		}
-
-		/*ray.y = fabs(inst->pov->y - ray.y);
-		ray.x = fabs(inst->pov->x - ray.x);
-		dst = (inst->pov->x - ray.x) * cos(inst->pov->dir) +
-						(inst->pov->y - ray.y) * sin(inst->pov->dir);
-		dst = sqrt(ray.y * ray.y + ray.x * ray.x) * cos(fabs(inst->pov->dir -
-				fabs(ray.fov_st)));*/
-		dst = dstH > dstV ? dstV : dstH;
-	//	dst = fabs(dst * cos(ray.fov_st - inst->pov->dir));
-	//	dst = fabs(dst * cos(ray.fov_st - inst->pov->dir));
-	//	printf("dst %f\n", dst);
-	//	printf("ang %f\n", ray.fov_st / 0.01745);
-		y = -1;
-	/*	while (y < (int)( 64 * inst->l->res_y / dst) && dst > 0)
+		if (dstH > dstV)
+		{
+			dst = dstV;
+			x_tx = x_V;
+			tx_drw = &inst->WE;
+			if (cos(ray.fov_st) < 0)
+				tx_drw = &inst->EA;
+		}
+		else
+		{
+			dst = dstH;
+			x_tx = x_H;
+			tx_drw = &inst->NO;
+			if (sin(ray.fov_st) < 0)
+				tx_drw = &inst->SO;
+		}
+		y= -1;
+		act = (192 * inst->l->res_x) / (-1.0 * dst * tan(30));
+		while (y < act)
 		{
 			y++;
-			if (y > (mid - 1))
-				continue;
-			ft_pixel_put_image(inst, x, mid - y, 0x990099);
-			ft_pixel_put_image(inst, x, mid + y, 0x990099);
-		}*/
-		x++;
-		ray.fov_st += M_PI/(3.0 * inst->l->res_x);
-		ray.fov_st = rnd_ang(ray.fov_st);
-		ray.fov_end += M_PI/(3.0 * inst->l->res_x);
+			if (y > (mid))
+				break;
+			col_up = ft_get_pixel_col(tx_drw, x_tx, tx_drw->y * (act -
+			y) /
+			(2*act));
+			col_dwn = ft_get_pixel_col(tx_drw, x_tx, tx_drw->y * (act +
+			y)/
+			(2*act));
+			ft_pixel_put_image(inst, x, mid - y, col_up);
+			ft_pixel_put_image(inst, x, mid + y, col_dwn);
+		}
+		x--;
+		ray.fov_st += M_PI/(3 * inst->l->res_x);
+	//	ray.fov_st = rnd_ang(ray.fov_st);
+		ray.fov_end += M_PI/(3 * inst->l->res_x);
 	}
-	mlx_clear_window(inst->mlx, inst->win);
+//	mlx_clear_window(inst->mlx, inst->win);
 	mlx_put_image_to_window(inst->mlx, inst->win, inst->img, 0, 0);
-	mlx_destroy_image(inst->mlx, inst->img);
+	mlx_do_sync(inst->mlx);
+//	mlx_destroy_image(inst->mlx, inst->img);
 	return (0);
 }
 
@@ -214,37 +230,37 @@ static int	key_hook(int keycode, t_vars *inst)
 	x = inst->pov->x;
 	float j = 32;
 	if (keycode == 119 && inst->l->lvl[(int) ((y + j * sin(inst->pov->dir)) /
-	SCALE)][(int) ((x + j * cos(inst->pov->dir)) / SCALE)] != '1')
+											  SCALE)][(int) ((x + j * cos(inst->pov->dir)) / SCALE)] != '1')
 	{
 		inst->pov->y = inst->pov->y - j * sin(inst->pov->dir);
 		inst->pov->x = inst->pov->x + j * cos(inst->pov->dir);
 	}
 	if (keycode == 115 && inst->l->lvl[(int) ((y - j * sin(inst->pov->dir)) /
-	SCALE)][(int) ((x - j * cos(inst->pov->dir)) / SCALE)] != '1')
+											  SCALE)][(int) ((x - j * cos(inst->pov->dir)) / SCALE)] != '1')
 	{
 		inst->pov->x = inst->pov->x - j * cos(inst->pov->dir);
 		inst->pov->y = inst->pov->y + j * sin(inst->pov->dir);
 	}
-	if (keycode == 97 && inst->l->lvl[(int) ((y - j * sin(inst->pov->dir +
-	M_PI / 2.0)) / SCALE)][(int) ((x - j * cos(inst->pov->dir + M_PI / 2.0)) /
-	SCALE)] != '1')
+	if (keycode == 100 && inst->l->lvl[(int) ((y - j * sin(inst->pov->dir +
+														  M_PI / 2.0)) / SCALE)][(int) ((x - j * cos(inst->pov->dir + M_PI / 2.0)) /
+																						SCALE)] != '1')
 	{
 		inst->pov->x = inst->pov->x - j * cos(inst->pov->dir + M_PI / 2.0);
 		inst->pov->y = inst->pov->y + j * sin(inst->pov->dir + M_PI / 2.0);
 	}
-	if (keycode == 100 && inst->l->lvl[(int) ((y - j * sin(inst->pov->dir -
-	M_PI / 2.0)) / SCALE)][(int) ((x - j * cos(inst->pov->dir - M_PI / 2.0)) /
-	SCALE)] != '1')
+	if (keycode == 97 && inst->l->lvl[(int) ((y - j * sin(inst->pov->dir -
+														   M_PI / 2.0)) / SCALE)][(int) ((x - j * cos(inst->pov->dir - M_PI / 2.0)) /
+																						 SCALE)] != '1')
 	{
 		inst->pov->x = inst->pov->x - j * cos(inst->pov->dir - M_PI / 2.0);
 		inst->pov->y = inst->pov->y + j * sin(inst->pov->dir - M_PI / 2.0);
 	}
-	if (keycode == 65361)
+	if (keycode == 65363)
 	{
 		inst->pov->dir = inst->pov->dir - 0.1;
 		inst->pov->dir = rnd_ang(inst->pov->dir);
 	}
-	if (keycode == 65363)
+	if (keycode == 65361)
 	{
 		inst->pov->dir = inst->pov->dir + 0.1;
 		inst->pov->dir = rnd_ang(inst->pov->dir);
@@ -308,23 +324,23 @@ static void ft_get_txtr(t_vars *inst)
 	inst->NO.img = mlx_xpm_file_to_image(inst->mlx, inst->l->NO,
 										 &inst->NO.x, &inst->NO.y);
 	inst->NO.addr = mlx_get_data_addr(inst->NO.img, &inst->NO.bpp,
-									&inst->NO.line_len, &inst->NO.endian);
+									  &inst->NO.line_len, &inst->NO.endian);
 	inst->SO.img = mlx_xpm_file_to_image(inst->mlx, inst->l->SO,
 										 &inst->SO.x, &inst->SO.y);
 	inst->SO.addr = mlx_get_data_addr(inst->SO.img, &inst->SO.bpp,
-									   &inst->SO.line_len, &inst->SO.endian);
+									  &inst->SO.line_len, &inst->SO.endian);
 	inst->WE.img = mlx_xpm_file_to_image(inst->mlx, inst->l->WE,
 										 &inst->WE.x, &inst->WE.y);
 	inst->WE.addr = mlx_get_data_addr(inst->WE.img, &inst->WE.bpp,
-									   &inst->WE.line_len, &inst->WE.endian);
+									  &inst->WE.line_len, &inst->WE.endian);
 	inst->EA.img = mlx_xpm_file_to_image(inst->mlx, inst->l->EA,
 										 &inst->EA.x, &inst->EA.y);
 	inst->EA.addr = mlx_get_data_addr(inst->EA.img, &inst->EA.bpp,
-									   &inst->EA.line_len, &inst->EA.endian);
+									  &inst->EA.line_len, &inst->EA.endian);
 	inst->SPR.img = mlx_xpm_file_to_image(inst->mlx, inst->l->spr,
 										  &inst->SPR.x, &inst->SPR.y);
 	inst->SPR.addr = mlx_get_data_addr(inst->SPR.img, &inst->SPR.bpp,
-								   &inst->SPR.line_len, &inst->SPR.endian);
+									   &inst->SPR.line_len, &inst->SPR.endian);
 }
 
 int main(void)
@@ -332,6 +348,7 @@ int main(void)
 	char		**map;
 	t_vars		inst;
 	t_legend	*l;
+	int sizex, sizey;
 
 	if (!(inst.l = ft_leg_init()))
 		return (-1);
@@ -339,16 +356,23 @@ int main(void)
 	if (!(ft_parse_legend(map, inst.l)))
 		return (-1);
 	inst.mlx = mlx_init();
+	mlx_get_screen_size(inst.mlx, &sizex, &sizey);
+	if (sizex > inst.l->res_x)
+		inst.l->res_x = sizex;
+	if (sizey > inst.l->res_y)
+		inst.l->res_y = sizey;
 	inst.win = mlx_new_window(inst.mlx, inst.l->res_x, inst.l->res_y, "Hell!");
 	//inst.l = l;
 	//inst.tx = &tx;
 	inst.pov = ft_player_init(inst.l->lvl);
 	ft_get_txtr(&inst);
+	inst.img = mlx_new_image(inst.mlx, inst.l->res_x, inst.l->res_y);
+	inst.addr = mlx_get_data_addr(inst.img, &inst.bpp, &inst.line_len, &inst
+			.endian);
 	ft_draw_rays(&inst);
-	mlx_loop_hook(inst.mlx, &ft_draw_rays, &inst);
+	//mlx_loop_hook(inst.mlx, &ft_draw_rays, &inst);
 //	mlx_hook(inst.win, 17, 0, key_hook, &inst);
 	mlx_key_hook(inst.win, &key_hook, &inst);
 	mlx_loop(inst.mlx);
 	return (0);
 }
-
