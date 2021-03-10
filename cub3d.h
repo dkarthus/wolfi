@@ -6,7 +6,7 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/04 15:03:47 by dkarthus          #+#    #+#             */
-/*   Updated: 2021/02/25 22:24:47 by dkarthus         ###   ########.fr       */
+/*   Updated: 2021/03/10 15:49:14 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <stdlib.h>
 # include <math.h>
 
-# define SCALE 64
+# define SCALE 1
 
 typedef struct	s_legend
 {
@@ -49,12 +49,23 @@ typedef struct s_txt
 
 typedef struct	s_obj
 {
-	double x;
-	double y;
-	double dir;
-	double fov_st;
-	double fov_end;
+	float x;
+	float y;
+	float dir;
+	float fov_st;
+	float fov_end;
 }				t_obj;
+
+typedef struct	s_sprites
+{
+	float				dst;
+	int 				x;
+	int 				y;
+	int					xpx_st;
+	int					xpx_end;
+	float 				ang;
+	struct s_sprites	*next;
+}				t_sprites;
 
 typedef struct	s_vars
 {
@@ -72,6 +83,7 @@ typedef struct	s_vars
 	t_txt 		WE;
 	t_txt 		EA;
 	t_txt 		SPR;
+	t_sprites *spr_dst;
 }				t_vars;
 
 int			ft_create_trgb(int t, int r, int g, int b);
@@ -95,10 +107,16 @@ void		ft_free_leg(t_legend *l);
 void		ft_free_map(char **map);
 t_legend	*ft_leg_init();
 
+int ft_spr_sort(t_vars *inst, int y, int x, t_obj *ray);
+t_sprites *ft_new_spr(t_vars *inst, int y, int x, t_obj *ray);
+int ft_ch_duplicate(t_vars *inst, int y, int x, t_obj *ray);
+t_sprites *ft_spr_insert(t_vars *inst, t_sprites *new);
+void ft_clear_spr_list(t_vars *inst);
 
-int		ft_draw_map(t_vars *inst);
+//int		ft_draw_map(t_vars *inst);
 int		ft_draw_rays(t_vars *inst);
 //t_obj	*ft_player_init(char **map);
-//void	ft_pixel_put_image(t_vars *inst, int x, int y, int col);
+void	ft_pixel_put_image(t_vars *inst, int x, int y, unsigned int col);
+unsigned int ft_get_pixel_col(t_txt *txt, int x, int y);
 
 #endif

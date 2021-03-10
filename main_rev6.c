@@ -6,45 +6,33 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/25 19:36:42 by dkarthus          #+#    #+#             */
-/*   Updated: 2021/03/01 23:39:47 by dkarthus         ###   ########.fr       */
+/*   Updated: 2021/03/10 22:18:32 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-static int ft_is_hit(char **map, int y, int x)
+static int ft_is_hit(t_vars *inst, int y, int x, t_obj *ray)
 {
 	int strs;
 
 	strs = 0;
 	if (y <= 0 || x <= 0)
 		return (1);
-	while(map[strs])
+	while(inst->l->lvl[strs])
 		strs++;
 	if (y >= strs - 1)
 		return (1);
-	if (x >= ft_strlen(map[y]) - 1)
+	if (x >= ft_strlen(inst->l->lvl[y]) - 1)
 		return (1);
-	if (map[y][x] == '1' || map[y][x] == ' ')
+	if (inst->l->lvl[y][x] == '1' || inst->l->lvl[y][x] == ' ')
 		return (1);
+	if (inst->l->lvl[y][x] == '2')
+		ft_spr_sort(inst, y, x, ray);
 	return (0);
 }
 
-void ft_pixel_put_image(t_vars *inst, int x, int y, unsigned int col)
-{
-	char *dst;
 
-	dst = inst->addr + (x * (inst->bpp / 8) + y * inst->line_len);
-	*(unsigned int *)dst = col;
-}
-
-static unsigned int ft_get_pixel_col(t_txt *txt, int x, int y)
-{
-	char *dst;
-
-	dst = txt->addr + (x * (txt->bpp / 8) + y * txt->line_len);
-	return (*(unsigned int *)dst);
-}
 /*
 static float dtr(int deg)
 {
@@ -109,6 +97,7 @@ int ft_draw_rays(t_vars *inst)
 	while (x >= 0)
 	{
 		iter = 1;
+		ray.dir = x;
 		if (sin(ray.fov_st) > 0.001)
 		{
 			ray.y = SCALE * ((int)inst->pov->y / SCALE) - 0.0001;
@@ -131,7 +120,7 @@ int ft_draw_rays(t_vars *inst)
 		}
 		while (iter > 0 && ray.y >= 0 && ray.x >= 0)
 		{
-			if (ft_is_hit(inst->l->lvl, (int)ray.y / SCALE, (int)ray.x / SCALE))
+			if (ft_is_hit(inst, (int)ray.y, (int)ray.x, &ray))
 			{
 				dstH = (ray.x - inst->pov->x) * cos(inst->pov->dir) -
 					   (ray.y - inst->pov->y) * sin(inst->pov->dir);
@@ -166,7 +155,7 @@ int ft_draw_rays(t_vars *inst)
 		}
 		while (iter > 0 && ray.y >= 0 && ray.x >= 0)
 		{
-			if (ft_is_hit(inst->l->lvl, (int)ray.y / SCALE, (int)ray.x / SCALE))
+			if (ft_is_hit(inst, (int)ray.y, (int)ray.x, &ray))
 			{
 				dstV = (ray.x - inst->pov->x) * cos(inst->pov->dir) -
 					   (ray.y - inst->pov->y) * sin(inst->pov->dir);
@@ -194,27 +183,34 @@ int ft_draw_rays(t_vars *inst)
 				tx_drw = &inst->SO;
 		}
 		y= -1;
-		act = (192 * inst->l->res_x) / (-1.0 * dst * tan(30));
+		//act = (3 * inst->l->res_x) / (-1.0 * dst * tan(30));
+		act = inst->l->res_x / (2.0 * dst);
 		while (y < act)
 		{
 			y++;
 			if (y > (mid))
 				break;
 			col_up = ft_get_pixel_col(tx_drw, x_tx, tx_drw->y * (act -
-			y) /
-			(2*act));
+			y) / (2*act));
 			col_dwn = ft_get_pixel_col(tx_drw, x_tx, tx_drw->y * (act +
-			y)/
-			(2*act));
+			y) / (2*act));
 			ft_pixel_put_image(inst, x, mid - y, col_up);
 			ft_pixel_put_image(inst, x, mid + y, col_dwn);
 		}
 		x--;
-		ray.fov_st += M_PI/(3 * inst->l->res_x);
+		ray.fov_st += M_PI/(3.0 * inst->l->res_x);
 	//	ray.fov_st = rnd_ang(ray.fov_st);
-		ray.fov_end += M_PI/(3 * inst->l->res_x);
+		ray.fov_end += M_PI/(3.0 * inst->l->res_x);
 	}
 //	mlx_clear_window(inst->mlx, inst->win);
+	/*while(inst->spr_dst)
+	{
+		printf("x%d y%d dst-%f st-%f end-%f\n", inst->spr_dst->x,
+	 inst->spr_dst->y, inst->spr_dst->dst, inst->spr_dst->str,
+	 inst->spr_dst->end);
+		inst->spr_dst = inst->spr_dst->next;
+	}
+	printf("-------\n");*/
 	mlx_put_image_to_window(inst->mlx, inst->win, inst->img, 0, 0);
 	mlx_do_sync(inst->mlx);
 //	mlx_destroy_image(inst->mlx, inst->img);
@@ -228,7 +224,7 @@ static int	key_hook(int keycode, t_vars *inst)
 
 	y = inst->pov->y;
 	x = inst->pov->x;
-	float j = 32;
+	float j = 1;
 	if (keycode == 119 && inst->l->lvl[(int) ((y + j * sin(inst->pov->dir)) /
 											  SCALE)][(int) ((x + j * cos(inst->pov->dir)) / SCALE)] != '1')
 	{
@@ -357,9 +353,9 @@ int main(void)
 		return (-1);
 	inst.mlx = mlx_init();
 	mlx_get_screen_size(inst.mlx, &sizex, &sizey);
-	if (sizex > inst.l->res_x)
+	if (sizex < inst.l->res_x)
 		inst.l->res_x = sizex;
-	if (sizey > inst.l->res_y)
+	if (sizey < inst.l->res_y)
 		inst.l->res_y = sizey;
 	inst.win = mlx_new_window(inst.mlx, inst.l->res_x, inst.l->res_y, "Hell!");
 	//inst.l = l;
@@ -369,6 +365,7 @@ int main(void)
 	inst.img = mlx_new_image(inst.mlx, inst.l->res_x, inst.l->res_y);
 	inst.addr = mlx_get_data_addr(inst.img, &inst.bpp, &inst.line_len, &inst
 			.endian);
+	inst.spr_dst = NULL;
 	ft_draw_rays(&inst);
 	//mlx_loop_hook(inst.mlx, &ft_draw_rays, &inst);
 //	mlx_hook(inst.win, 17, 0, key_hook, &inst);
