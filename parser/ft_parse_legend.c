@@ -62,5 +62,6 @@ int ft_parse_legend(char **map, t_legend *l)
 	}
 	ft_free_map(map);
 	ft_free_leg(l);
+	ft_putstr_fd("Error\n Invalid map", 1);
 	return (0);
 }

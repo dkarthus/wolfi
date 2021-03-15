@@ -6,7 +6,7 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 14:38:03 by dkarthus          #+#    #+#             */
-/*   Updated: 2021/03/10 15:25:42 by dkarthus         ###   ########.fr       */
+/*   Updated: 2021/03/15 22:45:34 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,10 @@ t_sprites *ft_new_spr(t_vars *inst, int y, int x, t_obj *ray)
 		return (NULL);
 	new->x = x;
 	new->y = y;
-	new->dst = sqrtf((x - inst->pov->x) * (x - inst->pov->x) + (y -
-			inst->pov->y) * (y - inst->pov->y));
-	new->ang = ray->fov_st;
+	new->dst = (x + 0.5 - inst->pov.x) * cos(inst->pov.dir) - (y + 0.5 -
+			inst->pov.y) * sin(inst->pov.dir);
+	new->ang = acos(new->dst / sqrtf((x + 0.5 - inst->pov.x) * (x + 0.5 -
+	inst->pov.x) + (y + 0.5 - inst->pov.y) * (y + 0.5 - inst->pov.y)));
 	new->xpx_st = (int)ray->dir;
 	new->next = NULL;
 	return (new);
@@ -95,8 +96,6 @@ void ft_clear_spr_list(t_vars *inst)
 {
 	t_sprites *tmp;
 
-	if (!inst->spr_dst)
-		return;
 	while(inst->spr_dst)
 	{
 		tmp = inst->spr_dst->next;

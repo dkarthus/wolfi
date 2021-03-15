@@ -13,7 +13,12 @@ add_executable(wolfi
         ./parser/ft_parse_legend_utils.c
         ./parser/ft_parse_legend_utils2.c
         ./parser/ft_parse_legend_utils3.c
-        main_rev6.c render/sprite_utils.c render/draw_utils.c)
+        main_rev6.c
+        render/sprite_utils.c
+        render/ft_draw_sprites.c
+        render/draw_utils.c
+        render/bitmap.c
+        )
 
 target_link_libraries(wolfi PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/libft.a
