@@ -6,15 +6,14 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 14:38:03 by dkarthus          #+#    #+#             */
-/*   Updated: 2021/03/15 22:45:34 by dkarthus         ###   ########.fr       */
+/*   Updated: 2021/03/18 20:24:57 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../cub3d.h"
 
-int ft_spr_sort(t_vars *inst, int y, int x, t_obj *ray)
+int			ft_spr_sort(t_vars *inst, int y, int x, t_obj *ray)
 {
-	//handle mallocs
 	t_sprites *new;
 
 	if (inst->spr_dst == NULL)
@@ -29,7 +28,7 @@ int ft_spr_sort(t_vars *inst, int y, int x, t_obj *ray)
 	return (1);
 }
 
-t_sprites *ft_spr_insert(t_vars *inst, t_sprites *new)
+t_sprites	*ft_spr_insert(t_vars *inst, t_sprites *new)
 {
 	t_sprites *tmp;
 
@@ -39,7 +38,7 @@ t_sprites *ft_spr_insert(t_vars *inst, t_sprites *new)
 		return (new);
 	}
 	tmp = inst->spr_dst;
-	while(tmp)
+	while (tmp)
 	{
 		if (tmp->next == NULL)
 		{
@@ -57,13 +56,17 @@ t_sprites *ft_spr_insert(t_vars *inst, t_sprites *new)
 	return (inst->spr_dst);
 }
 
-t_sprites *ft_new_spr(t_vars *inst, int y, int x, t_obj *ray)
+t_sprites	*ft_new_spr(t_vars *inst, int y, int x, t_obj *ray)
 {
 	t_sprites *new;
 
 	new = malloc(sizeof(t_sprites));
 	if (!new)
-		return (NULL);
+	{
+		ft_clear_spr_list(inst);
+		perror("Error\nCouldn't allocate mem in ft_new_spr.\n");
+		full_exit(inst);
+	}
 	new->x = x;
 	new->y = y;
 	new->dst = (x + 0.5 - inst->pov.x) * cos(inst->pov.dir) - (y + 0.5 -
@@ -75,7 +78,7 @@ t_sprites *ft_new_spr(t_vars *inst, int y, int x, t_obj *ray)
 	return (new);
 }
 
-int ft_ch_duplicate(t_vars *inst, int y, int x, t_obj *ray)
+int			ft_ch_duplicate(t_vars *inst, int y, int x, t_obj *ray)
 {
 	t_sprites *tmp;
 
@@ -92,14 +95,16 @@ int ft_ch_duplicate(t_vars *inst, int y, int x, t_obj *ray)
 	return (0);
 }
 
-void ft_clear_spr_list(t_vars *inst)
+void		ft_clear_spr_list(t_vars *inst)
 {
 	t_sprites *tmp;
 
-	while(inst->spr_dst)
+	while (inst->spr_dst)
 	{
 		tmp = inst->spr_dst->next;
-		free (inst->spr_dst);
+		free(inst->spr_dst);
 		inst->spr_dst = tmp;
 	}
+	free(inst->dsts);
+	inst->dsts = NULL;
 }

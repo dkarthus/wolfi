@@ -32,7 +32,7 @@ static char	**ft_create_map(char *file, char **map)
 	return (map);
 }
 
-char **ft_parse(char *file)
+char		**ft_parse(char *file)
 {
 	int		fd;
 	int		i;
@@ -55,4 +55,3 @@ char **ft_parse(char *file)
 	close(fd);
 	return (ft_create_map(file, map));
 }
-

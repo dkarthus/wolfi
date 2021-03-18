@@ -6,7 +6,7 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 12:01:02 by dkarthus          #+#    #+#             */
-/*   Updated: 2020/12/08 15:28:02 by dkarthus         ###   ########.fr       */
+/*   Updated: 2021/03/19 01:11:15 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,18 @@
 
 void	ft_free_leg(t_legend *l)
 {
-	if (!l->NO)
-		free(l->NO);
-	if (!l->SO)
-		free(l->SO);
-	if (!l->WE)
-		free(l->WE);
-	if (!l->EA)
-		free(l->EA);
-	if (!l->spr)
+	if (l->no)
+		free(l->no);
+	if (l->so)
+		free(l->so);
+	if (l->we)
+		free(l->we);
+	if (l->ea)
+		free(l->ea);
+	if (l->spr)
 		free(l->spr);
-	if (!l->lvl)
+	if (l->lvl)
 		ft_free_map(l->lvl);
-	free(l);
 }
 
 void	ft_free_map(char **map)
@@ -34,11 +33,11 @@ void	ft_free_map(char **map)
 	int i;
 
 	if (!map)
-		return;
+		return ;
 	i = 0;
-	while(map[i])
+	while (map[i])
 	{
-		free (map[i]);
+		free(map[i]);
 		map[i] = NULL;
 		i++;
 	}
@@ -63,7 +62,7 @@ int		ft_parse_res(char *line, t_legend *l, int *flag)
 	}
 	l->res_x = ft_atoi((const char *)res[0]);
 	l->res_y = ft_atoi((const char *)res[1]);
-	if (l->res_y <= 0 || l->res_x <=0 || res[2])
+	if (l->res_y <= 0 || l->res_x <= 0 || res[2])
 	{
 		ft_putstr_fd("Error\nWrong resolution format", 1);
 		ft_free_map(res);
@@ -81,15 +80,15 @@ int		ft_parse_ntexture(char *line, t_legend *l, int *flag)
 	if (line[1] != 'O' || line[2] != ' ')
 	{
 		ft_putstr_fd("Error\nWrong NO texture format", 1);
-		return(-1);
+		return (-1);
 	}
 	line = line + 3;
-	if (!(l->NO = ft_strdup(line)))
+	if (!(l->no = ft_strdup(line)))
 	{
 		perror("Error\n->NO");
 		return (-1);
 	}
-	if ((fd = open(l->NO, O_RDONLY)) < 0)
+	if ((fd = open(l->no, O_RDONLY)) < 0)
 	{
 		ft_putstr_fd("Error\nWrong NO texture format", 1);
 		return (-1);
@@ -106,14 +105,14 @@ int		ft_parse_stexture(char *line, t_legend *l, int *flag)
 	if (line[2] != ' ')
 	{
 		ft_putstr_fd("Error\nWrong SO texture format", 1);
-		return(-1);
+		return (-1);
 	}
-	if (!(l->SO = ft_strdup((line + 3))))
+	if (!(l->so = ft_strdup((line + 3))))
 	{
 		perror("Error\n->SO");
 		return (-1);
 	}
-	if ((fd = open(l->SO, O_RDONLY)) < 0)
+	if ((fd = open(l->so, O_RDONLY)) < 0)
 	{
 		ft_putstr_fd("Error\nWrong SO texture format", 1);
 		return (-1);

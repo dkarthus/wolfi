@@ -12,7 +12,7 @@
 
 #include "../cub3d.h"
 
-static int ft_parse_util(char **line, t_legend *l, int *flag)
+static int	ft_parse_util(char **line, t_legend *l, int *flag)
 {
 	if (*line[0] == 'R')
 		return (ft_parse_res(*line, l, flag));
@@ -37,7 +37,7 @@ static int ft_parse_util(char **line, t_legend *l, int *flag)
 	return (-1);
 }
 
-int ft_parse_legend(char **map, t_legend *l)
+int			ft_parse_legend(char **map, t_legend *l)
 {
 	int i;
 	int flag;

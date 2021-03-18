@@ -6,28 +6,28 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 13:59:23 by dkarthus          #+#    #+#             */
-/*   Updated: 2020/12/08 15:06:57 by dkarthus         ###   ########.fr       */
+/*   Updated: 2021/03/19 00:47:16 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../cub3d.h"
 
-int		ft_parse_wtexture(char *line, t_legend *l, int *flag)
+int	ft_parse_wtexture(char *line, t_legend *l, int *flag)
 {
 	int		fd;
 
 	if (line[1] != 'E' || line[2] != ' ')
 	{
 		ft_putstr_fd("Error\nWrong WE texture format", 1);
-		return(-1);
+		return (-1);
 	}
 	line = line + 3;
-	if (!(l->WE = ft_strdup(line)))
+	if (!(l->we = ft_strdup(line)))
 	{
 		perror("Error\n->WE");
 		return (-1);
 	}
-	if ((fd = open(l->WE, O_RDONLY)) < 0)
+	if ((fd = open(l->we, O_RDONLY)) < 0)
 	{
 		ft_putstr_fd("Error\nWrong WE texture format", 1);
 		return (-1);
@@ -37,22 +37,22 @@ int		ft_parse_wtexture(char *line, t_legend *l, int *flag)
 	return (1);
 }
 
-int		ft_parse_etexture(char *line, t_legend *l, int *flag)
+int	ft_parse_etexture(char *line, t_legend *l, int *flag)
 {
 	int		fd;
 
 	if (line[1] != 'A' || line[2] != ' ')
 	{
 		ft_putstr_fd("Error\nWrong EA texture format", 1);
-		return(-1);
+		return (-1);
 	}
 	line = line + 3;
-	if (!(l->EA = ft_strdup(line)))
+	if (!(l->ea = ft_strdup(line)))
 	{
 		perror("Error\n->EA");
 		return (-1);
 	}
-	if ((fd = open(l->EA, O_RDONLY)) < 0)
+	if ((fd = open(l->ea, O_RDONLY)) < 0)
 	{
 		ft_putstr_fd("Error\nWrong EA texture format", 1);
 		return (-1);
@@ -62,14 +62,14 @@ int		ft_parse_etexture(char *line, t_legend *l, int *flag)
 	return (1);
 }
 
-int		ft_parse_spritetex(char *line, t_legend *l, int *flag)
+int	ft_parse_spritetex(char *line, t_legend *l, int *flag)
 {
 	int		fd;
 
 	if (line[1] != ' ')
 	{
 		ft_putstr_fd("Error\nWrong sprite texture format", 1);
-		return(-1);
+		return (-1);
 	}
 	line = line + 2;
 	if (!(l->spr = ft_strdup(line)))
@@ -87,11 +87,11 @@ int		ft_parse_spritetex(char *line, t_legend *l, int *flag)
 	return (1);
 }
 
-int			ft_parse_fcol(char *line, t_legend *l, int *flag)
+int	ft_parse_fcol(char *line, t_legend *l, int *flag)
 {
 	char	**fcol;
 	int		i;
-	int 	col[5];
+	int		col[5];
 
 	i = 0;
 	if (!(fcol = ft_split((line + 1), ',')))
@@ -115,11 +115,11 @@ int			ft_parse_fcol(char *line, t_legend *l, int *flag)
 	return (1);
 }
 
-int			ft_parse_ccol(char *line, t_legend *l, int *flag)
+int	ft_parse_ccol(char *line, t_legend *l, int *flag)
 {
 	char	**ccol;
 	int		i;
-	int 	col[5];
+	int		col[5];
 
 	i = 0;
 	if (!(ccol = ft_split((line + 1), ',')))

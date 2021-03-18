@@ -6,12 +6,12 @@
 /*   By: dkarthus <dkarthus@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/25 19:36:42 by dkarthus          #+#    #+#             */
-/*   Updated: 2021/03/15 23:08:23 by dkarthus         ###   ########.fr       */
+/*   Updated: 2021/03/18 18:13:10 by dkarthus         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
+/*
 static int ft_is_hit(t_vars *inst, int y, int x, t_obj *ray)
 {
 	int strs;
@@ -38,7 +38,7 @@ static float dtr(int deg)
 {
 	return (deg * M_PI / 180.0);
 }
-*/
+
 double rnd_ang(double ang)
 {
 	if (ang > 6.2657)
@@ -48,7 +48,7 @@ double rnd_ang(double ang)
 	return (ang);
 }
 
-int ft_draw_rays(t_vars *inst)
+int ft_render_img(t_vars *inst)
 {
 	t_obj ray;
 	double dstV = 10000000;
@@ -92,7 +92,7 @@ int ft_draw_rays(t_vars *inst)
 //	ray.fov_st = 4.398;
 	ray.fov_st = inst->pov.dir - M_PI / 6.0;
 //	ray.fov_st = rnd_ang(ray.fov_st);
-	ray.fov_end = 0;
+//	ray.fov_end = 0;
 	x = inst->l.res_x;
 	while (x >= 0)
 	{
@@ -101,16 +101,14 @@ int ft_draw_rays(t_vars *inst)
 		if (sin(ray.fov_st) > 0.001)
 		{
 			ray.y = SCALE * ((int)inst->pov.y / SCALE) - 0.0001;
-			ray.x = (inst->pov.y - ray.y) * (cos(ray.fov_st) / sin(ray
-																			.fov_st)) + inst->pov.x;
+			ray.x = (inst->pov.y - ray.y) * (cos(ray.fov_st) / sin(ray.fov_st)) + inst->pov.x;
 			yof = -SCALE;
 			xof = -yof * (cos(ray.fov_st) / sin(ray.fov_st));
 		}
 		else if (sin(ray.fov_st) < -0.001)
 		{
 			ray.y = SCALE * ((int)inst->pov.y / SCALE) + SCALE;
-			ray.x = (inst->pov.y - ray.y) * (cos(ray.fov_st) / sin(ray
-																			.fov_st)) + inst->pov.x;
+			ray.x = (inst->pov.y - ray.y) * (cos(ray.fov_st) / sin(ray.fov_st)) + inst->pov.x;
 			yof = SCALE;
 			xof = -yof * (cos(ray.fov_st) / sin(ray.fov_st));
 		}
@@ -200,12 +198,13 @@ int ft_draw_rays(t_vars *inst)
 		x--;
 		ray.fov_st += M_PI/(3.0 * inst->l.res_x);
 	//	ray.fov_st = rnd_ang(ray.fov_st);
-		ray.fov_end += M_PI/(3.0 * inst->l.res_x);
+		//ray.fov_end += M_PI/(3.0 * inst->l.res_x);
 	}
 	ft_draw_sprites(inst);
 	mlx_put_image_to_window(inst->mlx, inst->win, inst->img, 0, 0);
 	return (0);
 }
+
 
 static int	key_hook(int keycode, t_vars *inst)
 {
@@ -244,24 +243,24 @@ static int	key_hook(int keycode, t_vars *inst)
 	if (keycode == 65363)
 	{
 		inst->pov.dir = inst->pov.dir - 0.1;
-		inst->pov.dir = rnd_ang(inst->pov.dir);
+	//	inst->pov.dir = rnd_ang(inst->pov.dir);
 	}
 	if (keycode == 65361)
 	{
 		inst->pov.dir = inst->pov.dir + 0.1;
-		inst->pov.dir = rnd_ang(inst->pov.dir);
+	//	inst->pov.dir = rnd_ang(inst->pov.dir);
 	}
-	ft_draw_rays(inst);
+//	ft_draw_rays(inst);
 	return (0);
 }
-/*
+
 static int	x_exit(t_vars *inst)
 {
 	mlx_destroy_image(inst->mlx, inst->img);
 	mlx_destroy_window(inst->mlx, inst->win);
 	exit (0);
 }
-*/
+
 
 
 
@@ -273,8 +272,8 @@ int main(void)
 	t_legend	*l;
 	int sizex, sizey;
 
-/*	if (!(inst.l = ft_leg_init()))
-		return (-1);*/
+	if (!(inst.l = ft_leg_init()))
+		return (-1);
 	map = ft_parse("/home/dkarthus/CLionProjects/wolfi/map.cub");
 	if (!(ft_parse_legend(map, &inst.l)))
 		return (-1);
@@ -295,9 +294,9 @@ int main(void)
 	inst.spr_dst = NULL;
 //	ft_draw_rays(&inst);
 //	ft_render_bmp(&inst);
-	mlx_loop_hook(inst.mlx, &ft_draw_rays, &inst);
-//	mlx_hook(inst.win, 17, 0, key_hook, &inst);
+	mlx_hook(inst.win, 17, 0, &x_exit, inst.mlx);
 	mlx_key_hook(inst.win, &key_hook, &inst);
+	mlx_loop_hook(inst.mlx, &ft_draw_rays, &inst);
 	mlx_loop(inst.mlx);
 	return (0);
-}
+}*/
