@@ -27,3 +27,5 @@ mathematics as a tool to create elegant and efficient algorithms.
 
 Instalation:
 make all
+
+![alt text](https://github.com/dkarthus/wolfi/blob/989a1bf3346af6122f54b890db8f4de70fa0d664/great_success.png)
